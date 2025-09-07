@@ -118,7 +118,7 @@ async function createContest(e){
           <label>End Time</label>
           <input type="datetime-local" value={form.endTime} onChange={e=>setForm(f=>({...f, endTime:e.target.value}))}/>
           <label>Number of Questions</label>
-          <input type="number" value={form.numQuestions} onChange={e=>setForm(f=>({...f, numQuestions:Number(e.target.value||5)}))}/>
+          <input type="number" value={form.numQuestions} onChange={e=>setForm(f=>({...f, numQuestions: e.target.value}))}/>
           <button type="submit">Create</button>
         </form>
       </div>
