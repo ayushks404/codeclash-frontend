@@ -76,9 +76,28 @@ async function createContest(e){
 }
 
 
+  // Replace your old join function with this one
   async function join(id){
     try{
+      // First, join the contest as usual
       await API.post(`/contest/${id}/join`);
+
+      // Second, fetch the contest to check if it has questions
+      const r = await API.get(`/contest/${id}`);
+      const contest = r.data?.contest || r.data;
+
+      // Third, if no questions are assigned, ask the server to assign them
+      if (!contest?.questions || contest.questions.length === 0) {
+        try {
+          // This call requires a valid token, which your api.js service provides
+          await API.post(`/contest/${id}/assign-random`);
+        } catch (assignErr) {
+          // Log a warning but don't stop the user from proceeding
+          console.warn("Could not auto-assign questions:", assignErr);
+        }
+      }
+
+      // Finally, navigate the user to the contest page
       window.location.href = `/contest/${id}`;
     } catch(err){
       console.error("join:", err);
