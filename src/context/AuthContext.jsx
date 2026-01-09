@@ -5,7 +5,7 @@ import React, { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // Initialize state from localStorage so it persists on refresh
+
   const [token, setToken] = useState(localStorage.getItem('cp_token'));
 
   // Use an effect to keep localStorage in sync with the state
@@ -29,5 +29,7 @@ export function AuthProvider({ children }) {
 
   const value = { token, login, logout };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>;
 }
