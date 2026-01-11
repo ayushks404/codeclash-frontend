@@ -13,10 +13,49 @@ export default function ContestPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchContest();
-    const interval = setInterval(fetchContest, 5000);
+    if (status === "live" && contest && !contest.questions) {
+      loadQuestions();
+    }
+  }, [status]);
+
+
+  
+
+  useEffect(() => {
+    async function fetchstatus() {
+      try {
+        const res = await API.get(`/contest/${id}/status`);
+        setStatus(res.data.status);
+      }
+      catch (err){
+        console.log("status not found");
+      }
+    }
+
+    async function initia() {
+      await  fetchContest();
+      await  fetchstatus();
+    }
+    initia();
+    const interval = setInterval(fetchstatus , 5000);
     return () => clearInterval(interval);
+
   }, [id]);
+
+
+
+
+  async function loadQuestions() {
+    try {
+      const qres = await API.get(`/contest/${id}/questions`);
+      setContest(prev => ({ ...prev, questions: qres.data }));
+    } catch (err) {
+      console.error("Failed to load questions");
+    }
+  }
+
+
+
 
   async function fetchContest() {
     try {
